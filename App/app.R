@@ -869,7 +869,7 @@ shinyApp(ui = ui, server = server)
 #code to graph latent curves
 
 # ########plot true and est z1, z2
-#m is the number of time points, n1 is number of subjects in scenario A, n2 is the number of subjects in scenario B, n is the total number of subjects in all 3 clusters
+#m is the number of time points, for ns, in the print out information, Individuals in each cluster (cluster alloc.):  75 22 3 n1=75, n2=22, n3=3
 # Z1 is the true curve, Z1_est is the estimated curve. same as p curve
 #  par(mfrow=c(2,2))
 #  #matplot(seq(0.0001,1,length=m),Z1[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(-8,8))
