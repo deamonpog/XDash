@@ -868,6 +868,17 @@ shinyApp(ui = ui, server = server)
 ##########################
 #code to graph latent curves
 
+# return_vals <- list("cluster_table_true"=cluster_table_true,
+#                     "cluster_table_est"=cluster_table_est,
+#                     "cluster_table_est_se"=cluster_table_est_se,
+#                     "Z_true_curves"=Z_true_curve,
+#                     "Z_est_curves"=Z_est_curve,
+#                     "p_true_curves"=p_true_curve,
+#                     "p_est_curves"=p_est_curve,
+#                     "mfpca_est"= mfpca_est,
+#                     "est_dbscan_temp" = est_dbscan_temp,
+#                     "cluster_allocation" = cluster_allocation,
+#                     "W_cfd"=W_cfd)
 # ########plot true and est z1, z2
 #m is the number of time points, for ns, in the print out information, Individuals in each cluster (cluster alloc.):  75 22 3 n1=75, n2=22, n3=3
 # Z1 is the true curve, Z1_est is the estimated curve. same as p curve

@@ -29,6 +29,9 @@ library(cfda)
 # For: gather method
 library(tidyverse)
 
+
+library(pdfCluster)
+
 # ---- For: parallelization ----
 # For: foreach loop
 library(foreach)
@@ -95,6 +98,149 @@ run_cfda_clustering <- function(){
   
   return(n100t300C)
 }
+
+
+#####################################################
+######################################################
+#function added to graph 11/15/2024 XC
+# return_vals <- list("cluster_table_true"=cluster_table_true,
+#                     "cluster_table_est"=cluster_table_est,
+#                     "cluster_table_est_se"=cluster_table_est_se,
+#                     "Z_true_curves"=Z_true_curve,
+#                     "Z_est_curves"=Z_est_curve,
+#                     "p_true_curves"=p_true_curve,
+#                     "p_est_curves"=p_est_curve,
+#                     "mfpca_est"= mfpca_est,
+#                     "est_dbscan_temp" = est_dbscan_temp,
+#                     "cluster_allocation" = cluster_allocation,
+#                     "W_cfd"=W_cfd)
+
+######################################################
+#gather the output from run_cfda_clustering as the input for the graph function
+answer_for_graph <- run_cfda_clustering()
+#test the graph function
+#graph_curves__cluster(answer_for_graph, scaleep = 1)
+####################################################
+
+#graph function
+graph_curves__cluster <- function (answer_for_graph, scaleep = 1){
+  
+  #step 1: gather all necessary output from run_cfda_clustering()
+  Z1 <- answer_for_graph$Z_true_curves[[1]][,,1]
+  Z2 <- answer_for_graph$Z_true_curves[[1]][,,2]
+  p1 <- answer_for_graph$p_true_curves[[1]][,,1]
+  p2 <- answer_for_graph$p_true_curves[[1]][,,2]
+  p3 <- answer_for_graph$p_true_curves[[1]][,,3]
+  
+  Z1_est <- answer_for_graph$Z_est_curves[[1]][,,1]
+  Z2_est <- answer_for_graph$Z_est_curves[[1]][,,2]
+  p1_est <- answer_for_graph$p_est_curves[[1]][,,1]
+  p2_est <- answer_for_graph$p_est_curves[[1]][,,2]
+  p3_est <- answer_for_graph$p_est_curves[[1]][,,3]
+  
+  n_vector <- answer_for_graph$cluster_allocation
+  n1 <- n_vector[1]
+  n2 <- n_vector[2]
+  n3 <- n_vector[3]
+  n <-  n1  + n2 + n3
+  m <- dim(Z1)[1]
+  
+  #mfpcahapf is the data set, need to find the score variables
+  combinedscore_z <- answer_for_graph$mfpca_est$scores
+  
+  #dbscan optimal epsilon
+  # scaleep=1 
+  
+  ###############
+  #step 2: graph
+  par(mfrow=c(2,2))
+   #matplot(seq(0.0001,1,length=m),Z1[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(-8,8))
+  matplot(seq(0.0001,1,length=m),Z1[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(-40,15))
+  matlines(seq(0.0001,1,length=m),Z1[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+  matlines(seq(0.0001,1,length=m),Z1[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+
+  #matplot(seq(0.0001,1,length=m),Z2[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(-8,20))
+  matplot(seq(0.0001,1,length=m),Z2[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(-40,15))
+  matlines(seq(0.0001,1,length=m),Z2[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+  matlines(seq(0.0001,1,length=m),Z2[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+  # 
+  #  # #plot first truelatent curves p_2 by clusters
+   matplot(seq(0.0001,1,length=m),Z1_est[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,ylim=c(-40,15))
+   matlines(seq(0.0001,1,length=m),Z1_est[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+   matlines(seq(0.0001,1,length=m),Z1_est[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+  #
+  #
+  #
+  #  #plot first truelatent curves p_2 by clusters
+   matplot(seq(0.0001,1,length=m),Z2_est[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,ylim=c(-40,15))
+   matlines(seq(0.0001,1,length=m),Z2_est[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+   matlines(seq(0.0001,1,length=m),Z2_est[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+
+  # #  # #
+   par(mfrow=c(2,3))
+   matplot(seq(0.0001,1,length=m),p1[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(0,1))
+   matlines(seq(0.0001,1,length=m),p1[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+   matlines(seq(0.0001,1,length=m),p1[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+
+   matplot(seq(0.0001,1,length=m),p2[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(0,1))
+   matlines(seq(0.0001,1,length=m),p2[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+   matlines(seq(0.0001,1,length=m),p2[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+  #
+  #
+   matplot(seq(0.0001,1,length=m),p3[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(0,1))
+   matlines(seq(0.0001,1,length=m),p3[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+   matlines(seq(0.0001,1,length=m),p3[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+
+   #plot first truelatent curves p_2 by clusters
+   matplot(seq(0.0001,1,length=m),p1_est[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,ylim=c(0,1))
+   matlines(seq(0.0001,1,length=m),p1_est[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+   matlines(seq(0.0001,1,length=m),p1_est[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+  #
+  #  #
+  #  # #plot first truelatent curves p_2 by clusters
+   matplot(seq(0.0001,1,length=m),p2_est[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,ylim=c(0,1))
+   matlines(seq(0.0001,1,length=m),p2_est[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+   matlines(seq(0.0001,1,length=m),p2_est[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+
+
+   matplot(seq(0.0001,1,length=m),p3_est[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,ylim=c(0,1))
+   matlines(seq(0.0001,1,length=m),p3_est[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+   matlines(seq(0.0001,1,length=m),p3_est[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+  
+  ##########################
+  #code to graph the cluster
+  #2D array you want to cluster
+  dimz=dim(combinedscore_z)[2] #find how many features data has
+  if (dimz<=2){minPts=4} #this is what user defined. if you could automatically find a good one.that might solve all my problem. nOW I use default value from literature minPts=4 for 2 features and 2*features+1 for data has more than 2 features
+  if (dimz>2){minPts=2*dimz+1}
+  # library(dbscan)
+  # library(fossil)
+  # #devtools::install_github("ahasverus/elbow")
+  # library(elbow) #this library automatically select best epsilon
+  # library(pdfCluster)
+  dist=kNNdist(combinedscore_z, k =minPts-1) #step 1 sort the distance. input 2D array you want to cluster, and then minPts-1
+  #ninty5p=quantile(dist, probs = pct)
+  #scaleep=1 #this set to be 1, that is the scale you multiple the optimal epsilon, I set it to 12.84 just because of my twitter data is very noisy. this is the how much you want to multiple the optimal radius. increase the circle basically. instead of the optimal epsilon circle. I increase the circle so my cluster is meaingful otherwise if smalla circle, too many clusters are created
+  #########change to max increase
+  distdataelbow=data.frame(sort(dist)) #sort the distance
+  distdataelbow$index=1:(dim(combinedscore_z)[1])
+  ipoint <- elbow(data = distdataelbow)
+  epsoptimal=(ipoint$sort.dist._selected)*scaleep #these three lines find the elbow
+  res <- dbscan(combinedscore_z, eps =epsoptimal , minPts = minPts)
+  tclusterdata=data.frame(combinedscore_z)
+  tclusterdata$Cluster=as.factor(res$cluster)
+  #library(ggplot2)
+  tps <- ggplot(tclusterdata,aes(X1,X2,colour = Cluster)) + geom_point(aes(shape=Cluster),size=3)+ggtitle(paste0("Cluster Results",'\n',"(",dim(tclusterdata)[1]," Subjects",")")) +
+    #xlab(expression('Score '* widehat(xi[i1]))) + ylab(expression('Score '* widehat(xi[i2])))
+    xlab('MFPCA Score1 ') + ylab('MFPCA Score2 ')+ theme(plot.title = element_text(hjust = 0.5))+#theme(text = element_text(size = 20))+
+    #theme(legend.text = element_text(size = 30))
+    #theme(axis.text=element_text(size = 20),axis.title = element_text(size =30))
+    theme(text=element_text(size = 20))+theme(legend.position.inside = c(0.92,0.8))
+  print(tps)
+}
+
+#####################################################
+######################################################
 
 # profvis({
 
@@ -704,6 +850,9 @@ ClusterSimulation <- function(num_indvs, timeseries_length,
                       "Z_est_curves"=Z_est_curve,
                       "p_true_curves"=p_true_curve,
                       "p_est_curves"=p_est_curve,
+                      "mfpca_est"= mfpca_est,
+                      "est_dbscan_temp" = est_dbscan_temp,
+                      "cluster_allocation" = cluster_allocation,
                       "W_cfd"=W_cfd)
   
   save(return_vals, file=file.path(temp_folder, paste("ClusterSim_", num_indvs, "_", timeseries_length, "_",
