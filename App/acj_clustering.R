@@ -115,12 +115,7 @@ run_cfda_clustering <- function(){
 #                     "cluster_allocation" = cluster_allocation,
 #                     "W_cfd"=W_cfd)
 
-######################################################
-#gather the output from run_cfda_clustering as the input for the graph function
-answer_for_graph <- run_cfda_clustering()
-#test the graph function
-#graph_curves__cluster(answer_for_graph, scaleep = 1)
-####################################################
+
 
 #graph function
 graph_curves__cluster <- function (answer_for_graph, scaleep = 1){
@@ -1335,6 +1330,16 @@ PsiFunc <- function(klen, timestamps01)
   psi_k2 <- sapply(c(1:klen), function(i) cos(2 * i * pi * timestamps01))
   return(rbind(psi_k1, psi_k2))
 }
+
+
+
+########################################
+######################################################
+#gather the output from run_cfda_clustering as the input for the graph function
+answer_for_graph <- run_cfda_clustering()
+#test the graph function
+graph_curves__cluster(answer_for_graph, scaleep = 1)
+####################################################
 
 # RunExperiment <- function(scenario, num_replicas, est_choice, some_identifier="noid")
 # {
