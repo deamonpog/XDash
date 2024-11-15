@@ -11,7 +11,7 @@
 
 library(shiny)
 library(shinydashboard)
-library(ConvergenceConcepts)
+#library(ConvergenceConcepts)
 
 source("acj_clustering.R")
 
@@ -860,3 +860,101 @@ server <- function(input, output, session) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
+
+###########################
+###########################
+#11/14/2024
+##########################
+#code to graph latent curves
+
+# ########plot true and est z1, z2
+#m is the number of time points, n1 is number of subjects in scenario A, n2 is the number of subjects in scenario B, n is the total number of subjects in all 3 clusters
+# Z1 is the true curve, Z1_est is the estimated curve. same as p curve
+#  par(mfrow=c(2,2))
+#  #matplot(seq(0.0001,1,length=m),Z1[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(-8,8))
+# matplot(seq(0.0001,1,length=m),Z1[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(-40,15))
+# matlines(seq(0.0001,1,length=m),Z1[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+# matlines(seq(0.0001,1,length=m),Z1[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+# 
+# #matplot(seq(0.0001,1,length=m),Z2[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(-8,20))
+# matplot(seq(0.0001,1,length=m),Z2[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(-40,15))
+# matlines(seq(0.0001,1,length=m),Z2[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+# matlines(seq(0.0001,1,length=m),Z2[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+# 
+#  # #plot first truelatent curves p_2 by clusters
+#  matplot(seq(0.0001,1,length=m),Z1_est[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,ylim=c(-40,15))
+#  matlines(seq(0.0001,1,length=m),Z1_est[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+#  matlines(seq(0.0001,1,length=m),Z1_est[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+# #
+# #
+# #
+# #  #plot first truelatent curves p_2 by clusters
+# #  matplot(seq(0.0001,1,length=m),Z2_est[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,ylim=c(-40,15))
+# #  matlines(seq(0.0001,1,length=m),Z2_est[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+# #  matlines(seq(0.0001,1,length=m),Z2_est[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+# 
+# #  # #
+#  par(mfrow=c(2,3))
+#  matplot(seq(0.0001,1,length=m),p1[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(0,1))
+#  matlines(seq(0.0001,1,length=m),p1[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+#  matlines(seq(0.0001,1,length=m),p1[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+# 
+#  matplot(seq(0.0001,1,length=m),p2[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(0,1))
+#  matlines(seq(0.0001,1,length=m),p2[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+#  matlines(seq(0.0001,1,length=m),p2[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+# #
+# #
+#  matplot(seq(0.0001,1,length=m),p3[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,xlim=c(0,1),ylim=c(0,1))
+#  matlines(seq(0.0001,1,length=m),p3[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+#  matlines(seq(0.0001,1,length=m),p3[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+# 
+#  #plot first truelatent curves p_2 by clusters
+#  matplot(seq(0.0001,1,length=m),p1_est[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,ylim=c(0,1))
+#  matlines(seq(0.0001,1,length=m),p1_est[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+#  matlines(seq(0.0001,1,length=m),p1_est[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+# #
+# #  #
+# #  # #plot first truelatent curves p_2 by clusters
+#  matplot(seq(0.0001,1,length=m),p2_est[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,ylim=c(0,1))
+#  matlines(seq(0.0001,1,length=m),p2_est[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+#  matlines(seq(0.0001,1,length=m),p2_est[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+# 
+# 
+#  matplot(seq(0.0001,1,length=m),p3_est[,1:n1],col="red",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=1, lwd=3,ylim=c(0,1))
+#  matlines(seq(0.0001,1,length=m),p3_est[,(n1+1):(n1+n2)],col="green",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=3, lwd=3)
+#  matlines(seq(0.0001,1,length=m),p3_est[,(n1+n2+1):n],col="blue",type = "l",xlab="Time",ylab="value",cex.lab=1.5, cex.axis=2,lty=5, lwd=3)
+
+##########################
+#code to graph the cluster
+#2D array you want to cluster
+#mfpcahapf is the data set, need to find the score variables
+# combinedscore_z=mfpcahapf$MFPCAZ$scoresZ
+# dimz=dim(combinedscore_z)[2] #find how many features data has
+# if (dimz<=2){minPts=4} #this is what user defined. if you could automatically find a good one.that might solve all my problem. nOW I use default value from literature minPts=4 for 2 features and 2*features+1 for data has more than 2 features
+# if (dimz>2){minPts=2*dimz+1}
+# library(dbscan)
+# library(fossil)
+# #devtools::install_github("ahasverus/elbow")
+# library(elbow) #this library automatically select best epsilon
+# library(pdfCluster)
+# dist=kNNdist(combinedscore_z, k =minPts-1) #step 1 sort the distance. input 2D array you want to cluster, and then minPts-1
+# #ninty5p=quantile(dist, probs = pct)
+# scaleep=1 #this set to be 1, that is the scale you multiple the optimal epsilon, I set it to 12.84 just because of my twitter data is very noisy. this is the how much you want to multiple the optimal radius. increase the circle basically. instead of the optimal epsilon circle. I increase the circle so my cluster is meaingful otherwise if smalla circle, too many clusters are created
+# #########change to max increase
+# distdataelbow=data.frame(sort(dist)) #sort the distance
+# distdataelbow$index=1:(dim(combinedscore_z)[1])
+# ipoint <- elbow(data = distdataelbow)
+# epsoptimal=(ipoint$sort.dist._selected)*scaleep #these three lines find the elbow 
+# res <- dbscan(combinedscore_z, eps =epsoptimal , minPts = minPts) 
+# tclusterdata=data.frame(combinedscore_z)
+# tclusterdata$Cluster=as.factor(res$cluster)
+# library(ggplot2)
+# tps <- ggplot(tclusterdata,aes(X1,X2,colour = Cluster)) + geom_point(aes(shape=Cluster),size=3)+ggtitle(paste0("Twitter Users Cluster Results",'\n',"(",dim(tclusterdata)[1]," Subjects",")")) +
+#   #xlab(expression('Score '* widehat(xi[i1]))) + ylab(expression('Score '* widehat(xi[i2])))
+#   xlab('MFPCA Score1 ') + ylab('MFPCA Score2 ')+ theme(plot.title = element_text(hjust = 0.5))+#theme(text = element_text(size = 20))+
+#   #theme(legend.text = element_text(size = 30))  
+#   #theme(axis.text=element_text(size = 20),axis.title = element_text(size =30))
+#   theme(text=element_text(size = 20))+theme(legend.position = c(0.92,0.8))
+# tps
+############################
